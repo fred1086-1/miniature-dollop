@@ -1,0 +1,10 @@
+{
+  "services": [
+    {
+      "name": "cinesync",
+      "image": "sureshfizzy/cinesync:latest",
+      "isMain": true,
+      "internalPort": "80"
+    }
+  ]
+}
