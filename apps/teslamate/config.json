@@ -1,0 +1,24 @@
+{
+  "name": "teslamate",
+  "id": "teslamate",
+  "available": true,
+  "short_desc": "A powerful, self-hosted data logger for your Tesla.",
+  "author": "teslamate",
+  "port": 4000,
+  "categories": [
+    "utilities"
+  ],
+  "description": "A powerful, self-hosted data logger for your Tesla.",
+  "tipi_version": 2,
+  "version": "v2.0.0",
+  "source": "https://github.com/teslamate-org/teslamate",
+  "exposable": true,
+  "supported_architectures": [
+    "arm64",
+    "amd64"
+  ],
+  "created_at": 1745082405284,
+  "updated_at": 1745674974072,
+  "dynamic_config": true,
+  "form_fields": []
+}
