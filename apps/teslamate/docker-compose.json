@@ -1,0 +1,88 @@
+{
+  "services": [
+    {
+      "name": "teslamate",
+      "image": "teslamate/teslamate:latest",
+      "environment": {
+        "ENCRYPTION_KEY": "secretkey",
+        "DATABASE_USER": "teslamate",
+        "DATABASE_PASS": "password",
+        "DATABASE_NAME": "teslamate",
+        "DATABASE_HOST": "database",
+        "MQTT_HOST": "mosquitto"
+      },
+      "internalPort": 4000,
+      "volumes": [
+        {
+          "hostPath": "./import",
+          "containerPath": "/opt/app/import",
+          "readOnly": false,
+          "shared": false,
+          "private": false
+        }
+      ],
+      "capDrop": [
+        "all"
+      ]
+    },
+    {
+      "name": "database",
+      "image": "postgres:17",
+      "environment": {
+        "POSTGRES_USER": "teslamate",
+        "POSTGRES_PASSWORD": "password",
+        "POSTGRES_DB": "teslamate"
+      },
+      "volumes": [
+        {
+          "hostPath": "teslamate-db",
+          "containerPath": "/var/lib/postgresql/data",
+          "readOnly": false,
+          "shared": false,
+          "private": false
+        }
+      ]
+    },
+    {
+      "name": "grafana",
+      "image": "teslamate/grafana:latest",
+      "environment": {
+        "DATABASE_USER": "teslamate",
+        "DATABASE_PASS": "password",
+        "DATABASE_NAME": "teslamate",
+        "DATABASE_HOST": "database"
+      },
+      "internalPort": 3000,
+      "volumes": [
+        {
+          "hostPath": "teslamate-grafana-data",
+          "containerPath": "/var/lib/grafana",
+          "readOnly": false,
+          "shared": false,
+          "private": false
+        }
+      ]
+    },
+    {
+      "name": "mosquitto",
+      "image": "eclipse-mosquitto:2",
+      "command": "mosquitto -c /mosquitto-no-auth.conf",
+      "volumes": [
+        {
+          "hostPath": "mosquitto-conf",
+          "containerPath": "/mosquitto/config",
+          "readOnly": false,
+          "shared": false,
+          "private": false
+        },
+        {
+          "hostPath": "mosquitto-data",
+          "containerPath": "/mosquitto/data",
+          "readOnly": false,
+          "shared": false,
+          "private": false
+        }
+      ]
+    }
+  ]
+}
