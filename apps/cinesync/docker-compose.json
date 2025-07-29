@@ -5,19 +5,22 @@
       "image": "sureshfizzy/cinesync:latest",
       "environment": {
         "PUID": "1000",
-        "PGID": "1000"
+        "PGID": "1000",
+        "TZ": "UTC"
       },
+      "internalPort": 5173,
+      "addPorts": [
+        {
+          "containerPort": 8082,
+          "hostPort": 8082,
+          "tcp": true,
+          "udp": false
+        }
+      ],
       "volumes": [
         {
-          "hostPath": "/home",
-          "containerPath": "/home",
-          "readOnly": false,
-          "shared": false,
-          "private": false
-        },
-        {
-          "hostPath": "/mnt",
-          "containerPath": "/mnt",
+          "hostPath": "./.env",
+          "containerPath": "/app/.env",
           "readOnly": false,
           "shared": false,
           "private": false
@@ -30,8 +33,15 @@
           "private": false
         },
         {
-          "hostPath": "./.env",
-          "containerPath": "/app/.env",
+          "hostPath": "/home",
+          "containerPath": "/home",
+          "readOnly": false,
+          "shared": false,
+          "private": false
+        },
+        {
+          "hostPath": "/mnt",
+          "containerPath": "/mnt",
           "readOnly": false,
           "shared": false,
           "private": false
