@@ -2,7 +2,7 @@
   "services": [
     {
       "name": "cinesync",
-      "image": "sureshfizzy/cinesync:3.0",
+      "image": "sureshfizzy/cinesync:latest",
       "environment": {
         "PUID": "1000",
         "PGID": "1000",
