@@ -1,0 +1,79 @@
+{
+  "$schema": "https://raw.githubusercontent.com/runtipi/runtipi-appstore/refs/heads/master/apps/dynamic-compose-schema.json",
+  "services": [
+    {
+      "name": "template",
+      "image": "<image>",
+      "isMain": false,
+      "volumes": [
+        {
+          "hostPath": "${APP_DATA_DIR}/data/template",
+          "containerPath": "/path/in/app"
+        }
+      ],
+      "environment": {
+        "ENV": "env"
+      },
+      "dependsOn": ["template-db", "template-redis"]
+    },
+    {
+      "name": "template-web",
+      "image": "<image>",
+      "internalPort": 0,
+      "isMain": true,
+      "volumes": [
+        {
+          "hostPath": "${APP_DATA_DIR}/data/template-web/file.xyz",
+          "containerPath": "/path/in/app/to/file.xyz"
+        },
+        {
+          "hostPath": "${APP_DATA_DIR}/data/template",
+          "containerPath": "/path/in/app"
+        }
+      ],
+      "environment": {
+        "VIRTUAL_HOST": "${APP_DOMAIN}"
+      },
+      "dependsOn": ["template"],
+      "extraLabels": {
+        "traefik.http.middlewares.{{RUNTIPI_APP_ID}}-M1.compress": true,
+        "traefik.http.middlewares.{{RUNTIPI_APP_ID}}-M2.headers.browserXssFilter": true,
+        "traefik.http.middlewares.{{RUNTIPI_APP_ID}}-M2.headers.forceSTSHeader": true,
+        "traefik.http.middlewares.{{RUNTIPI_APP_ID}}-M2.headers.frameDeny": true,
+        "traefik.http.middlewares.{{RUNTIPI_APP_ID}}-M2.headers.referrerPolicy": "no-referrer-when-downgrade",
+        "traefik.http.middlewares.{{RUNTIPI_APP_ID}}-M2.headers.stsSeconds": "31536000",
+        "traefik.http.routers.{{RUNTIPI_APP_ID}}.middlewares": "${APP_ID}-M1,${APP_ID}-M2",
+        "traefik.http.routers.{{RUNTIPI_APP_ID}}-local.middlewares": "${APP_ID}-M1,${APP_ID}-M2"
+      }
+    },
+    {
+      "name": "template-cron",
+      "image": "<image>",
+      "volumes": [
+        {
+          "hostPath": "${APP_DATA_DIR}/data/template",
+          "containerPath": "/path/in/app"
+        }
+      ],
+      "entrypoint": ["/cron.sh"],
+      "dependsOn": ["template", "template-redis"]
+    },
+    {
+      "name": "template-redis",
+      "image": "<image>"
+    },
+    {
+      "name": "template-db",
+      "image": "<image>",
+      "volumes": [
+        {
+          "hostPath": "${APP_DATA_DIR}/data/db",
+          "containerPath": "/path/in/app"
+        }
+      ],
+      "environment": {
+        "ENV": "env"
+      }
+    }
+  ]
+}
