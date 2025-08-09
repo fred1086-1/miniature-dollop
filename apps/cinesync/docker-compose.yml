@@ -1,6 +1,6 @@
 services:
   cinesync:
-    image: sureshfizzy/cinesync:3.0
+    image: sureshfizzy/cinesync:latest
     container_name: cinesync
     restart: unless-stopped
     ports:
