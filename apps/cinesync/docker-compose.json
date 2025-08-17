@@ -33,7 +33,7 @@
           "private": false
         },
         {
-          "hostPath": "${APP_DATA_DIR}/home",
+          "hostPath": "${ROOT_FOLDER_HOST}/media",
           "containerPath": "/home",
           "readOnly": false,
           "shared": false,
