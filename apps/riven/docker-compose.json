@@ -1,0 +1,89 @@
+{
+  "services": [
+    {
+      "name": "riven-frontend",
+      "image": "spoked/riven-frontend:latest",
+      "environment": {
+        "PUID": "1000",
+        "PGID": "1000",
+        "TZ": "America/New_York",
+        "ORIGIN": "http://localhost:3000",
+        "BACKEND_URL": "http://riven:8080",
+        "DIALECT": "postgres",
+        "DATABASE_URL": "postgres://postgres:postgres@riven-db/riven"
+      },
+      "internalPort": 3000,
+      "tty": true,
+      "dependsOn": {
+        "riven": {
+          "condition": "service_healthy"
+        }
+      }
+    },
+    {
+      "name": "riven",
+      "image": "spoked/riven:latest",
+      "environment": {
+        "PUID": "1000",
+        "PGID": "1000",
+        "TZ": "America/New_York",
+        "RIVEN_FORCE_ENV": "true",
+        "RIVEN_DATABASE_HOST": "postgresql+psycopg2://postgres:postgres@riven-db/riven"
+      },
+      "internalPort": 8080,
+      "volumes": [
+        {
+          "hostPath": "./data",
+          "containerPath": "/riven/data",
+          "readOnly": false,
+          "shared": false,
+          "private": false
+        },
+        {
+          "hostPath": "/mnt",
+          "containerPath": "/mnt",
+          "readOnly": false,
+          "shared": false,
+          "private": false
+        }
+      ],
+      "healthCheck": {
+        "test": "curl -s http://localhost:8080 >/dev/null || exit 1",
+        "interval": "30s",
+        "timeout": "10s",
+        "retries": 10
+      },
+      "tty": true,
+      "dependsOn": {
+        "riven_postgres": {
+          "condition": "service_healthy"
+        }
+      }
+    },
+    {
+      "name": "riven-db",
+      "image": "postgres:16.3-alpine3.20",
+      "environment": {
+        "PGDATA": "/var/lib/postgresql/data/pgdata",
+        "POSTGRES_USER": "postgres",
+        "POSTGRES_PASSWORD": "postgres",
+        "POSTGRES_DB": "riven"
+      },
+      "volumes": [
+        {
+          "hostPath": "./riven-db",
+          "containerPath": "/var/lib/postgresql/data/pgdata",
+          "readOnly": false,
+          "shared": false,
+          "private": false
+        }
+      ],
+      "healthCheck": {
+        "test": "pg_isready -U postgres",
+        "interval": "10s",
+        "timeout": "5s",
+        "retries": 5
+      }
+    }
+  ]
+}
