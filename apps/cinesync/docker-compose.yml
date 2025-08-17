@@ -14,5 +14,5 @@ services:
       # Configuration and database
       - ${APP_DATA_DIR}/data/app.env
       - ${APP_DATA_DIR}/db:/app/db
-      - ${APP_DATA_DIR}/home:/home
+      - ${ROOT_FOLDER_HOST}/media/data:/home
       - ${APP_DATA_DIR}/mnt:/mnt
